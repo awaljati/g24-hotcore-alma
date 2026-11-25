@@ -1,0 +1,225 @@
+% Project report in A&A format. Compile on Overleaf (A&A template includes aa.cls).
+\documentclass{aa}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage[varg]{txfonts}
+\usepackage{hyperref}
+
+\newcommand{\kms}{km\,s$^{-1}$}
+\newcommand{\chcn}{CH$_3$CN}
+\newcommand{\chtcn}{CH$_3^{13}$CN}
+\newcommand{\vycn}{CH$_2$CHCN}
+\newcommand{\tco}{$^{13}$CO}
+
+\begin{document}
+
+\title{Hot-core chemistry in G24.78+0.08 A1 and NW from ALMA Band~6 line identification}
+\subtitle{Project report}
+\titlerunning{Hot-core chemistry in G24.78+0.08}
+
+\author{Awal Jati Asmoro}
+\authorrunning{A. J. Asmoro}
+
+\institute{Astronomy Study Program, Institut Teknologi Bandung, Jl.\ Ganesha 10, Bandung 40132, Indonesia}
+
+\date{Project report, November 2026}
+
+\abstract
+{Hot molecular cores around young massive stars host a rich chemistry of complex organic molecules whose lines trace temperature and chemical evolution.}
+{We identify the molecular lines in one ALMA Band~6 spectral window toward the high-mass star-forming region G24.78+0.08 and compare the hot core A1 with a neighbouring core 1.3$''$ to its northwest (NW).}
+{Lines in the 220.28--220.52~GHz window were identified interactively in CASA Viewer, using blind catalogue searches and an explicit assessment of each candidate, and then matched systematically to the JPL and CDMS catalogues with Gaussian fitting. Physical conditions were derived from \chtcn\ rotation diagrams and isotopologue ratios, and continuum-subtracted moment-0 maps were made for individual lines.}
+{Five species are detected: \chcn\ ($J=12$--11, $K=6$--9), \chtcn, HNCO, \vycn\ (tentative) and \tco\ in absorption. The systemic velocities are $112.2\pm0.5$~\kms\ (A1) and $109.3\pm0.5$~\kms\ (NW). Rotation temperatures are similar, $111\pm14$~K and $125\pm11$~K, and the main \chcn\ lines are optically thick ($\tau\approx5$). The \vycn/\chtcn\ intensity ratio is about 2.4 times higher in NW, and vinyl cyanide emission is concentrated almost entirely in NW. In A1, molecular emission peaks 0.15--0.2$''$ south of the continuum peak.}
+{The two cores are similarly warm but chemically distinct. \tco\ absorption reveals cold gas in front of both cores and three unrelated foreground clouds.}
+
+\keywords{stars: formation -- ISM: molecules -- ISM: individual objects: G24.78+0.08 -- astrochemistry -- radio lines: ISM}
+
+\maketitle
+
+%--------------------------------------------------------------------
+\section{Introduction}
+
+Hot molecular cores are compact ($\lesssim0.1$~pc), warm ($\gtrsim100$~K) and dense condensations around young massive stars. There, complex organic molecules (COMs) evaporate from dust-grain ices and drive a rich gas-phase chemistry. Their rotational lines at millimetre wavelengths act as thermometers and chemical clocks, so comparing neighbouring cores can reveal differences in evolutionary stage or heating history.
+
+G24.78+0.08 is a high-mass star-forming region with a bolometric luminosity of about $2\times10^5\,L_\odot$ at a distance of $6.7\pm0.7$~kpc. It contains several molecular cores within about 0.1~pc \citep{moscadelli2021}. Core A1 hosts a hyper-compact (HC) \ion{H}{ii} region \citep{moscadelli2018}, and earlier interferometric observations found a \chcn\ component near 111~\kms\ associated with its continuum peak \citep{beltran2011}.
+
+This work identifies the molecular lines in one ALMA Band~6 spectral window toward A1 and a neighbouring core 1.3$''$ to its northwest (labelled NW here), derives their physical conditions, and compares their chemistry.
+
+%--------------------------------------------------------------------
+\section{Observations and data processing}
+
+We used a pipeline-calibrated, primary-beam-corrected ALMA Band~6 image cube of G24.78+0.08 observed on 2015 September 16 (Table~\ref{tab:cube}).
+
+\begin{table}
+\caption{Properties of the image cube.}
+\label{tab:cube}
+\centering
+\begin{tabular}{ll}
+\hline\hline
+Parameter & Value \\
+\hline
+Frequency range (LSRK) & 220.285--220.518 GHz \\
+Channels & $398\times0.588$~MHz (0.80~\kms) \\
+Synthesised beam & $0.188''\times0.154''$, PA $85.9^\circ$ \\
+Pixel size & $0.03''$ \\
+Noise per channel & 2.2~mJy~beam$^{-1}$ ($\approx2.8$~K) \\
+\hline
+\end{tabular}
+\end{table}
+
+The cube was processed in CASA 6.7.6. We used \texttt{importfits} and \texttt{imhead} to load the cube, and \texttt{immoments} and \texttt{imstat} to locate the continuum peak of A1 at $\alpha=18^\mathrm{h}36^\mathrm{m}12.554^\mathrm{s}$, $\delta=-07^\circ12'10.84''$ (J2000). The second core, NW, peaks at $18^\mathrm{h}36^\mathrm{m}12.478^\mathrm{s}$, $-07^\circ12'10.18''$. Spectra were extracted with \texttt{specflux} in $5\times5$-pixel boxes (about one beam) at the two continuum peaks. Continuum-subtracted moment-0 maps were made with \texttt{imsubimage}, \texttt{imcontsub} (zeroth-order fit to line-free channels) and \texttt{immoments}. Flux densities were converted to brightness temperature with
+\begin{equation}
+T_\mathrm{B} = 1.222\times10^{6}\,\frac{I}{\nu^2\,\theta_\mathrm{maj}\,\theta_\mathrm{min}},
+\end{equation}
+with $I$ in Jy~beam$^{-1}$, $\nu$ in GHz and $\theta$ in arcsec. The continuum level is about 35~K at A1 and 11~K at NW.
+
+%--------------------------------------------------------------------
+\section{Line identification}
+
+Lines were identified in two independent steps that check each other.
+
+\paragraph{Interactive identification.} In the CASA Viewer spectral profile tool, the most prominent features of each core were searched with \textit{Line Overlays} (the local Splatalogue database), with the Doppler shift set to the systemic velocity of that core. For each feature we ran a blind search over a narrow frequency range, without restricting the species, and judged every candidate by three criteria: whether it falls on the peak, whether the molecule is plausible in a hot core, and whether its upper-level energy $E_\mathrm{u}$ is reasonable. Two cases show why this matters. At 220.48~GHz, \vycn\ $24_{1,24}$--$23_{1,23}$ and two components of t-DCOOH lie only 0.04~MHz apart, far below the channel width; t-DCOOH was rejected because a deuterated species should be far weaker than this line. In the deep absorption near 220.32~GHz, a dozen candidates appear, but only \tco\ 2--1 ($E_\mathrm{u}=16$~K) is abundant enough at low excitation to absorb the continuum almost completely.
+
+\paragraph{Systematic matching.} Every feature above $3\sigma$ was corrected to the rest frame with the radio convention, matched to the JPL \citep{pickett1998} and CDMS \citep{muller2005} catalogues within about 1~MHz, and fitted with Gaussian profiles in Python. A line counts as identified when its frequency matches, its velocity agrees with other lines within about 1~\kms, and other transitions of the same species in the band are present or their absence can be explained. Both steps gave the same species (Table~\ref{tab:lines}, Fig.~\ref{fig:spectrum}).
+
+\begin{table*}
+\caption{Identified lines. $v_\mathrm{LSR}$ and $W=\int T_\mathrm{B}\,\mathrm{d}v$ are from Gaussian fits; typical $1\sigma$ errors are 0.1--0.5~\kms\ and 5--15\%.}
+\label{tab:lines}
+\centering
+\begin{tabular}{llrrrrrrl}
+\hline\hline
+Species & Transition & $\nu_\mathrm{rest}$ & $E_\mathrm{u}$ & \multicolumn{2}{c}{A1} & \multicolumn{2}{c}{NW} & Status \\
+ & & (MHz) & (K) & $v_\mathrm{LSR}$ & $W$ & $v_\mathrm{LSR}$ & $W$ & \\
+ & & & & (\kms) & (K\,\kms) & (\kms) & (K\,\kms) & \\
+\hline
+\chcn & $12_6$--$11_6$ & 220594.42 & 326 & 112.4 & 609 & 109.0 & 1147 & secure (blended wing) \\
+\chcn & $12_7$--$11_7$ & 220539.32 & 419 & 112.3 & 344 & 108.9 & 499 & secure \\
+\chcn & $12_8$--$11_8$ & 220475.81 & 526 & 112.5 & 241 & 108.8 & 396 & secure \\
+\chcn & $12_9$--$11_9$ & 220403.90 & 647 & -- & -- & $\approx107$ & $\approx284$ & A1 hidden; NW blended \\
+\chtcn & $12_4$--$11_4$ & 220570.37 & 183 & 111.9 & 156 & 109.9 & 234 & secure \\
+\chtcn & $12_5$--$11_5$ & 220532.33 & 247 & 111.9 & 87 & -- & -- & NW blended \\
+\chtcn & $12_6$--$11_6$ & 220485.86 & 326 & 112.4 & 67 & 109.7 & 127 & secure \\
+\chtcn & $12_7$--$11_7$ & 220430.99 & 419 & 111.5 & 20 & 108.6 & 26 & tentative ($\approx3\sigma$) \\
+HNCO & $10_{1,9}$--$9_{1,8}$ & 220585.20 & 101 & 113.3 & 522 & 109.9 & 731 & secure \\
+\vycn & $24_{1,24}$--$23_{1,23}$ & 220561.39 & 135 & 112.5 & 128 & 109.3 & 471 & tentative (one line; t-DCOOH) \\
+\tco & 2--1 & 220398.68 & 16 & \multicolumn{2}{c}{abs.\ 103--113} & \multicolumn{2}{c}{abs.\ 104--111} & secure \\
+\hline
+\end{tabular}
+\end{table*}
+
+\chtcn\ $12_3$ and $12_8$ fall at the band edges and were not fitted, and five weak features (3--$5\sigma$) remain unidentified. Averaging the well-fitted lines gives systemic velocities of $112.2\pm0.5$~\kms\ (A1) and $109.3\pm0.5$~\kms\ (NW). The A1 value agrees with the $\approx111$~\kms\ reported by \citet{beltran2011}.
+
+\begin{figure*}
+\centering
+\includegraphics[width=\textwidth]{fig1_spectrum_A1.png}
+\caption{Spectrum at the A1 continuum peak in brightness temperature, with identified lines labelled. Bottom axis: observed frequency; top axis: rest frequency at 112.2~\kms. Shaded bands mark \tco\ absorption.}
+\label{fig:spectrum}
+\end{figure*}
+
+%--------------------------------------------------------------------
+\section{Physical conditions}
+
+\paragraph{Rotation temperature.} Assuming LTE and optically thin emission, the upper-level column density of each line is
+\begin{equation}
+N_\mathrm{u} = \frac{8\pi k\nu^2 W}{h c^3 A_\mathrm{ul}}, \qquad
+\ln\frac{N_\mathrm{u}}{g_\mathrm{u}} = \ln\frac{N_\mathrm{tot}}{Q(T_\mathrm{rot})} - \frac{E_\mathrm{u}}{kT_\mathrm{rot}}.
+\end{equation}
+Einstein coefficients were computed for a symmetric top, $A_\mathrm{ul}=1.164\times10^{-20}\,\nu^3 S\mu^2/(2J+1)$ with $S=(J^2-K^2)/J$, $\mu=3.922$~D and $\nu$ in MHz. Degeneracies include nuclear-spin weights, and $Q(T)\approx14684\,(T/300~\mathrm{K})^{1.5}$. Fits to \chtcn\ $K=4$--7 (Fig.~\ref{fig:rot}) give $T_\mathrm{rot}=111\pm14$~K and $N(\mathrm{CH_3^{13}CN})\approx6.2\times10^{15}$~cm$^{-2}$ for A1, and $T_\mathrm{rot}=125\pm11$~K and $N\approx9.2\times10^{15}$~cm$^{-2}$ for NW (excluding the blended $K=5$ line).
+
+\begin{figure}
+\centering
+\includegraphics[width=\hsize]{fig2_rotation.png}
+\caption{Rotation diagrams of \chtcn\ for A1 and NW. The open symbol (NW, $K=5$) is blended and excluded from the fit.}
+\label{fig:rot}
+\end{figure}
+
+\paragraph{Optical depth.} The main \chcn\ lines lie on an almost flat rotation diagram between $E_\mathrm{u}=326$ and 526~K, the signature of optically thick emission. The ratio of the $12_6$ line in the two isotopologues gives
+\begin{equation}
+\frac{T_{12}}{T_{13}} = \frac{1-e^{-\tau_{12}}}{1-e^{-\tau_{12}/R}},
+\end{equation}
+with $R={}^{12}\mathrm{C}/{}^{13}\mathrm{C}\approx40$ from the Galactic gradient of \citet{milam2005} at $R_\mathrm{GC}\approx3.5$~kpc. This yields $\tau(\mathrm{CH_3CN}~12_6)\approx4.6$ (A1) and 4.7 (NW), and total \chcn\ column densities of $\approx2.5\times10^{17}$ and $\approx3.7\times10^{17}$~cm$^{-2}$.
+
+\paragraph{\tco\ absorption.} Against the strong continuum of A1, \tco\ 2--1 absorbs almost completely between $\approx103$ and 113~\kms, flanked by emission at $\approx100$ and 116--126~\kms. Toward NW the absorption covers a similar range, 104--111~\kms. Three narrow components at $\approx37$, 46 and 52~\kms\ appear toward both cores and trace unrelated foreground clouds along the line of sight at $l\approx25^\circ$.
+
+%--------------------------------------------------------------------
+\section{A1 versus NW}
+
+The two cores, separated by 1.3$''$ ($\approx8700$~au, about seven beams), have similar temperatures but differ in velocity, continuum strength and chemistry (Table~\ref{tab:compare}).
+
+\begin{table}
+\caption{Comparison of the two cores.}
+\label{tab:compare}
+\centering
+\begin{tabular}{lcc}
+\hline\hline
+Quantity & A1 & NW \\
+\hline
+Continuum $T_\mathrm{B}$ (K) & $\approx35$ & $\approx11$ \\
+$v_\mathrm{LSR}$ (\kms) & $112.2\pm0.5$ & $109.3\pm0.5$ \\
+$T_\mathrm{rot}$ (\chtcn) (K) & $111\pm14$ & $125\pm11$ \\
+$N$(\chcn) (cm$^{-2}$) & $\approx2.5\times10^{17}$ & $\approx3.7\times10^{17}$ \\
+$W$(\vycn)/$W$(\chtcn\ $12_4$) & 0.83 & 2.0 \\
+$W$(HNCO)/$W$(\chtcn\ $12_4$) & 3.4 & 3.1 \\
+\hline
+\end{tabular}
+\end{table}
+
+\paragraph{Kinematics.} NW is blue-shifted by about 3~\kms\ relative to A1, so every line appears about four channels earlier (Fig.~\ref{fig:compare}). In CASA Viewer, catalogue labels placed at the A1 velocity land beside, not on, the NW peaks.
+
+\paragraph{Chemistry.} The vinyl cyanide ratio is about 2.4 times higher in NW, whereas the HNCO ratio is the same within the errors. The moment-0 maps (Fig.~\ref{fig:mom0}) confirm this spatially: \vycn\ emission is concentrated almost entirely in NW, while HNCO, \chcn\ and \chtcn\ are present in both cores. A difference confined to one nitrile, with similar temperatures and HNCO abundance, points to different chemical histories rather than to excitation alone.
+
+\paragraph{Spatial offsets.} In A1, HNCO, \chcn\ and \chtcn\ peak about 0.15--0.2$''$ ($\approx1000$--1300~au) south of the continuum peak. The centre of A1 is occupied by the HC \ion{H}{ii} region, so the molecular gas likely sits in a surrounding envelope, and the bright continuum may also absorb part of the line emission at the centre. NW is elongated toward the north, and its line emission follows that elongation.
+
+\begin{figure*}
+\centering
+\includegraphics[width=\textwidth]{fig3_A1_vs_NW.png}
+\caption{Continuum-subtracted spectra of A1 (top) and NW (bottom), each shifted to the rest frame with its own $v_\mathrm{LSR}$. Dotted lines mark catalogue frequencies.}
+\label{fig:compare}
+\end{figure*}
+
+\begin{figure*}
+\centering
+\includegraphics[width=0.9\textwidth]{fig4_moment0.png}
+\caption{Continuum (top left) and continuum-subtracted moment-0 maps of HNCO, \chcn\ $12_7$, \vycn\ and \chtcn\ $12_4$. Cyan contours show the continuum at 10, 30, 50, 70 and 90\% of its peak. Axes are offsets in arcsec.}
+\label{fig:mom0}
+\end{figure*}
+
+%--------------------------------------------------------------------
+\section{Discussion and limitations}
+
+The detected species are typical of hot cores. \chcn\ and \vycn\ are nitriles released from grain mantles once the gas exceeds $\approx100$~K. \chcn\ lines up to $E_\mathrm{u}=647$~K and $T_\mathrm{rot}\approx110$--125~K confirm that both cores contain warm gas, and HNCO, which has a peptide-like N--C=O bond, is bright in both. The main open question is why vinyl cyanide is enhanced in NW while temperatures and HNCO are similar. Nitrile chemistry is often discussed as a tracer of hot-core age, but a single transition is not enough to settle this.
+
+The main limitations are the following.
+\begin{itemize}
+\item \textit{Rotation temperatures are probably lower limits.} The spectra average over about one beam ($\approx1000$~au), mixing hotter inner gas with cooler gas, and the strong A1 continuum can suppress line intensities. A full LTE model of the spectrum with the continuum as background would be more accurate.
+\item \textit{The isotope ratio is assumed.} $^{12}$C/$^{13}$C$\,\approx40$ comes from a Galactic relation, so total \chcn\ column densities are uncertain by about a factor of two.
+\item \textit{Narrow bandwidth.} The 233~MHz window holds only one HNCO and one \vycn\ transition, so their excitation cannot be constrained, and \vycn\ remains tentative because of the coincidence with t-DCOOH.
+\item \textit{Region size matters.} Enlarging the A1 extraction region from about one beam to $\approx0.9''$ changes the relative line strengths: HNCO falls more than \chcn\ $12_6$, so HNCO is more centrally concentrated. All quantitative results therefore use beam-sized regions at the continuum peaks.
+\item \textit{Five weak U-lines} remain unidentified.
+\end{itemize}
+
+%--------------------------------------------------------------------
+\section{Conclusions}
+
+\begin{enumerate}
+\item Five species are identified in the 220.28--220.52~GHz window toward G24.78+0.08: \chcn, \chtcn, HNCO, \vycn\ (tentative) and \tco\ in absorption. Interactive identification in CASA Viewer and systematic catalogue matching agree.
+\item A1 and NW have systemic velocities of 112.2 and 109.3~\kms\ and similar \chtcn\ rotation temperatures of $\approx110$--125~K. The main \chcn\ lines are optically thick ($\tau\approx5$).
+\item Vinyl cyanide is $\approx2.4$ times more prominent relative to \chtcn\ in NW and is spatially concentrated there, revealing a chemical difference between neighbouring hot cores.
+\item In A1, molecular emission is offset 0.15--0.2$''$ from the continuum peak, consistent with molecular gas surrounding the central HC \ion{H}{ii} region.
+\item \tco\ absorption traces cold gas in front of both cores at a similar velocity range, plus three foreground clouds at $\approx37$, 46 and 52~\kms.
+\end{enumerate}
+
+\begin{acknowledgements}
+This work makes use of the following ALMA data: ADS/JAO.ALMA\#2013.1.00489.S. ALMA is a partnership of ESO (representing its member states), NSF (USA) and NINS (Japan), together with NRC (Canada), MOST and ASIAA (Taiwan), and KASI (Republic of Korea), in cooperation with the Republic of Chile. The Joint ALMA Observatory is operated by ESO, AUI/NRAO and NAOJ. The data were provided as part of a course assignment at Institut Teknologi Bandung. Parts of the analysis code and text were prepared with the assistance of an AI tool (Claude, Anthropic); all results were checked by the author. The CASA and Python scripts are available at [GitHub link to be added].
+\end{acknowledgements}
+
+\begin{thebibliography}{}
+\bibitem[Beltr\'an et al.(2011)]{beltran2011} Beltr\'an, M. T., Cesaroni, R., Zhang, Q., et al. 2011, A\&A, doi:10.1051/0004-6361/201117200
+\bibitem[Milam et al.(2005)]{milam2005} Milam, S. N., et al. 2005, ApJ, 634, 1126
+\bibitem[Moscadelli et al.(2018)]{moscadelli2018} Moscadelli, L., Rivilla, V. M., Cesaroni, R., et al. 2018, A\&A, 616, A66
+\bibitem[Moscadelli et al.(2021)]{moscadelli2021} Moscadelli, L., Cesaroni, R., Beltr\'an, M. T., \& Rivilla, V. M. 2021, A\&A, 650, A142
+\bibitem[M\"uller et al.(2005)]{muller2005} M\"uller, H. S. P., Schl\"oder, F., Stutzki, J., \& Winnewisser, G. 2005, J. Mol. Struct., 742, 215
+\bibitem[Pickett et al.(1998)]{pickett1998} Pickett, H. M., Poynter, R. L., Cohen, E. A., et al. 1998, J. Quant. Spectrosc. Radiat. Transfer, 60, 883
+\end{thebibliography}
+
+\end{document}
